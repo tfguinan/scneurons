@@ -5,13 +5,14 @@
 n.pcs <- 20 # Okay to be high
 x.res <- 0.4 # I set this slightly lower to try see high level signatures
 setwd("~/scneurons25")
+## DONE ##
 
 lib.dir <- file.path("~/scneurons25/software/R_LIBS")
 data.dir <- "~/scneurons25/data"
 out.dir <- "~/scneurons25/output"
 dir.create(data.dir)
 dir.create(out.dir)
-# Set custom library path
+# Set custom library path for installations
 dir.create(lib.dir, recursive = TRUE)
 .libPaths(c(lib.dir, .libPaths()))
 
