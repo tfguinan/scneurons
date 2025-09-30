@@ -97,5 +97,5 @@ pdf(file.path(out.dir, "nonlineardim_plots.pdf"), width=11.7, height=8.3)
 DimPlot(main.data, reduction = "umap", label = TRUE) + NoLegend()
 dev.off()
 
-saveRDS(main.data, file = file.path(out.dir, "scneurons25.RDS"))
+saveRDS(main.data, file = file.path(out.dir, "scneurons25_main.RDS"))
 q()
