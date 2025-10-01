@@ -39,6 +39,8 @@ out.dir <- file.path(getwd(), "output")
 main.data <- ReadParseBio(data.dir)
 
 # TODO(TG): Check ParseBio filter defaults (probably just use the filtered mtx)
+# Although we implement extra QC steps, I think the ParseBio filtering will probably be a good starting point
+# All of the plots we looked at seemed okay 
 main.data <- CreateSeuratObject(counts = main.data, project = "scneurons25", min.cells = 3, min.features = 200)
 
 print("Created Seurat object")
@@ -49,11 +51,11 @@ print(main.data[1:3, 1:10])
 print(sprintf("Number of cells: ", length(colnames(main.data))))
 print(sprintf("Number of features: ", length(rownames(main.data))))
 
-
-# Add QC metrics
+# Add extra QC metrics
 main.data[["percent.mt"]] <- PercentageFeatureSet(main.data, pattern = "^MT-")
 main.data[["percent.ribo"]] <- PercentageFeatureSet(main.data, pattern = "^RPS|^RPL")
-main.data[["complexity"]] <- main.data$nFeature_RNA / main.data$nCount_RNA
+# Relating to sequence saturation
+main.data[["complexity"]] <- main.data$nFeature_RNA / main.data$nCount_RNA # This can also be log10
 
 pdf(file.path(out.dir, "qc_plots.pdf"), width=11.7, height=8.3)
 VlnPlot(main.data, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.ribo", "complexity"), ncol = 5)
@@ -68,7 +70,6 @@ dev.off()
 main.data <- NormalizeData(main.data)
 # https://doi.org/10.1016/j.cell.2019.05.031
 main.data <- FindVariableFeatures(main.data, selection.method = "vst", nfeatures = 2000)
-
 
 main.data <- ScaleData(main.data) # Scales using variable features by default
 main.data <- RunPCA(main.data, features = VariableFeatures(object = main.data))
@@ -99,4 +100,5 @@ DimPlot(main.data, reduction = "umap", label = TRUE) + NoLegend()
 dev.off()
 
 saveRDS(main.data, file = file.path(out.dir, "scneurons25_main.RDS"))
+print("Saved Seurat object to scneurons25_main.RDS")
 q()
